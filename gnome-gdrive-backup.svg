@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3584e4"/>
+      <stop offset="100%" stop-color="#1c71d8"/>
+    </linearGradient>
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e1f5fe"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad)" filter="url(#dropShadow)"/>
+
+  <!-- Subtle Inner Border -->
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Google Drive Triangle / Cloud Hybrid Symbol -->
+  <!-- Cloud Silhouette -->
+  <path d="M 64 36 C 54.5 36 46.5 42.6 44.5 51.5 C 43.1 51.2 41.6 51 40 51 C 31.2 51 24 58.2 24 67 C 24 75.8 31.2 83 40 83 L 88 83 C 95.7 83 102 76.7 102 69 C 102 61.6 96.3 55.6 89.1 55.1 C 86.8 44.2 76.4 36 64 36 Z" 
+        fill="url(#cloudGrad)" filter="url(#dropShadow)"/>
+
+  <!-- Sync / Backup Curved Arrows in Center -->
+  <g transform="translate(64, 66) scale(0.95)" fill="none" stroke="#1c71d8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Top curved arrow -->
+    <path d="M -13 0 A 13 13 0 0 1 11 -6"/>
+    <polyline points="7,-11 11,-6 6,-3"/>
+    
+    <!-- Bottom curved arrow -->
+    <path d="M 13 0 A 13 13 0 0 1 -11 6"/>
+    <polyline points="-7,11 -11,6 -6,3"/>
+
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="2.5" fill="#1c71d8"/>
+  </g>
+
+  <!-- Google Drive Accent Dots at Bottom -->
+  <circle cx="50" cy="98" r="3.5" fill="#4285F4"/>
+  <circle cx="64" cy="98" r="3.5" fill="#34A853"/>
+  <circle cx="78" cy="98" r="3.5" fill="#FBBC05"/>
+</svg>

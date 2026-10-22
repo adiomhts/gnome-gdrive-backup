@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=GNOME Cloud Backup
+Name[ru]=GNOME Резервное копирование
+Comment=Backup and restore GNOME settings, extensions, SystemFiles and crontab to Google Drive
+Comment[ru]=Резервное копирование и восстановление настроек GNOME, расширений, SystemFiles и cron на Google Диск
+Exec=/home/abuzad00/.gemini/antigravity-ide/scratch/gnome-gdrive-backup/main.py --gui
+Icon=gnome-gdrive-backup
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;System;Utility;Archiving;
+Keywords=backup;restore;gdrive;google;gnome;tweaks;extensions;settings;
+StartupNotify=true
