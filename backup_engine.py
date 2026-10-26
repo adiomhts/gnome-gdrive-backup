@@ -161,13 +161,19 @@ def create_backup_archive(
                     tar.add(autostart_dir, arcname="autostart")
                     log("✓ Автозапуск добавлен", log_callback)
 
-            # GNOME Shell Extensions
+            # GNOME Shell Extensions (User & System)
             if opts.get("extensions"):
                 ext_dir = Path.home() / ".local" / "share" / "gnome-shell" / "extensions"
                 if ext_dir.is_dir():
-                    log("Добавление расширений GNOME Shell (~/.local/share/gnome-shell/extensions)...", log_callback)
+                    log("Добавление пользовательских расширений GNOME Shell (~/.local/share/gnome-shell/extensions)...", log_callback)
                     tar.add(ext_dir, arcname="extensions")
-                    log("✓ Расширения GNOME Shell добавлены", log_callback)
+                    log("✓ Пользовательские расширения GNOME Shell добавлены", log_callback)
+
+                sys_ext_dir = Path("/usr/share/gnome-shell/extensions")
+                if sys_ext_dir.is_dir():
+                    log("Добавление системных расширений GNOME Shell (/usr/share/gnome-shell/extensions)...", log_callback)
+                    tar.add(sys_ext_dir, arcname="system_extensions")
+                    log("✓ Системные расширения GNOME Shell добавлены", log_callback)
 
             # SystemFiles (excluding asusctl)
             if opts.get("system_files"):
@@ -224,7 +230,7 @@ def inspect_backup(archive_path: str) -> Dict[str, Any]:
                 "dconf": "dconf_dump.ini" in names,
                 "crontab": "crontab.txt" in names,
                 "autostart": any(n.startswith("autostart") for n in names),
-                "extensions": any(n.startswith("extensions") for n in names),
+                "extensions": any(n.startswith("extensions") or n.startswith("system_extensions") for n in names),
                 "system_files": any(n.startswith("SystemFiles") for n in names),
                 "cursor": any(n.startswith("icons") or n.startswith("local_icons") for n in names),
             },
@@ -280,17 +286,35 @@ def restore_backup(
                     shutil.copy2(item, dest_item)
             log("✓ Папка ~/SystemFiles восстановлена", log_callback)
 
-        # 2. GNOME Shell Extensions
-        if opts.get("extensions") and (tmp_path / "extensions").is_dir():
-            log("Восстановление расширений GNOME Shell...", log_callback)
+        # 2. GNOME Shell Extensions (User + System)
+        if opts.get("extensions"):
             dest_ext = Path.home() / ".local" / "share" / "gnome-shell" / "extensions"
             dest_ext.mkdir(parents=True, exist_ok=True)
-            for ext in (tmp_path / "extensions").iterdir():
-                dest_item = dest_ext / ext.name
-                if dest_item.exists():
-                    shutil.rmtree(dest_item)
-                shutil.copytree(ext, dest_item)
-            log("✓ Расширения GNOME Shell восстановлены", log_callback)
+
+            if (tmp_path / "extensions").is_dir():
+                log("Восстановление пользовательских расширений GNOME Shell...", log_callback)
+                for ext in (tmp_path / "extensions").iterdir():
+                    dest_item = dest_ext / ext.name
+                    if dest_item.exists():
+                        shutil.rmtree(dest_item)
+                    shutil.copytree(ext, dest_item)
+                log("✓ Пользовательские расширения GNOME Shell восстановлены", log_callback)
+
+            # System extensions fallback to user directory so they work without sudo
+            if (tmp_path / "system_extensions").is_dir():
+                log("Проверка и восстановление системных расширений...", log_callback)
+                sys_global = Path("/usr/share/gnome-shell/extensions")
+                restored_count = 0
+                for ext in (tmp_path / "system_extensions").iterdir():
+                    in_sys = (sys_global / ext.name).exists()
+                    in_user = (dest_ext / ext.name).exists()
+                    if not in_sys and not in_user:
+                        shutil.copytree(ext, dest_ext / ext.name)
+                        restored_count += 1
+                if restored_count > 0:
+                    log(f"✓ Установлено {restored_count} системных расширений в пользовательскую папку (работают без root)", log_callback)
+                else:
+                    log("✓ Системные расширения уже присутствуют в системе", log_callback)
 
         # 3. Autostart
         if opts.get("autostart") and (tmp_path / "autostart").is_dir():

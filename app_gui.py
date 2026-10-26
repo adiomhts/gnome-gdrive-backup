@@ -148,7 +148,7 @@ class GnomeBackupWindow(Adw.ApplicationWindow):
 
         self.sw_ext = Adw.SwitchRow()
         self.sw_ext.set_title("Расширения GNOME Shell")
-        self.sw_ext.set_subtitle("Пользовательские расширения из ~/.local/share/gnome-shell/extensions и их параметры")
+        self.sw_ext.set_subtitle("Пользовательские и системные расширения с их параметрами")
         self.sw_ext.set_active(True)
         comp_group.add(self.sw_ext)
 
